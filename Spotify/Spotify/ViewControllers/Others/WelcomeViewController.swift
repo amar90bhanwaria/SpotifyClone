@@ -37,9 +37,14 @@ class WelcomeViewController: UIViewController {
     
     @objc func didTapSignInButton() {
         let vc = AuthViewController()
-        vc.completionHandler = { [weak self] success in
-            DispatchQueue.main.async {
-                self?.handleSignIn(success: success)
+        vc.completionHandler = { [weak self] result in
+            switch result {
+            case .success(let isSuccess):
+                DispatchQueue.main.async {
+                    self?.handleSignIn(success: isSuccess)
+                }
+            case .failure(_):
+                print("Failed")
             }
         }
         vc.navigationItem.largeTitleDisplayMode = .never
@@ -47,6 +52,10 @@ class WelcomeViewController: UIViewController {
     }
     
     private func handleSignIn(success: Bool) {
+        guard success else { return }
         
+        let mainAppTabBarVC = TabBarViewController()
+        mainAppTabBarVC.modalPresentationStyle = .fullScreen
+        present(mainAppTabBarVC, animated: true)
     }
 }
